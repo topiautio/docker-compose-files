@@ -4,30 +4,41 @@ services:
     environment:
       VERBOSE: false
     ports:
-      - 25565:25565
-      - 8123:8123
+      - 25565:25565 #default server port
+      - 8123:8123 #dynmap web ui
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       - lazytainer.group.minecraft.sleepMethod=stop
       - lazytainer.group.minecraft.ports=25565
       - lazytainer.group.minecraft.minPacketThreshold=2 # Start after two incomming packets
-      - lazytainer.group.minecraft.inactiveTimeout=86400 # 24 hours, to stop the server after 24 hours of inactivity
+      - lazytainer.group.minecraft.inactiveTimeout=86400 # Stop the server after 24 hours of inactivity
     restart: unless-stopped
     network_mode: bridge
   mc:
-    image: itzg/minecraft-server
+    image: itzg/minecraft-server # https://docker-minecraft-server.readthedocs.io/en/latest/
     environment:
       EULA: TRUE
       TYPE: PAPER
       MEMORY: 2G
+      MAX_PLAYERS: 5
+      VIEW_DISTANCE: 10
+      SIMULATION_DISTANCE: 8
       USE_AIKAR_FLAGS: true
-      VERSION: "1.21.1" # server version
-      PLUGINS: |
-        https://github.com/ViaVersion/ViaVersion/releases/download/5.2.1/ViaVersion-5.2.1.jar
-        https://cdn.modrinth.com/data/fRQREgAc/versions/AdtrWcU2/Dynmap-3.7-beta-7-spigot.jar
-        https://github.com/EssentialsX/Essentials/releases/download/2.20.1/EssentialsX-2.20.1.jar
-        
+      VERSION: "1.21.4" # server version
+      MODRINTH_DOWNLOAD_DEPENDENCIES: required
+      MODRINTH_PROJECTS : |
+        dynmap:beta
+        viaversion
+        viabackwards
+        chunky
+        coreprotect:llmrc4cl
+        essentialsx:puUfqBpY
+
+
+      LEVEL: "world" # folder name
+      OPS: |
+        Omituinen
     volumes:
       - /home/user/minecraft:/data
     labels:
